@@ -9,8 +9,8 @@ name = "webdown"
 path = "src/main.rs"
 
 [dependencies]
-webdown-core = { path = "../webdown-core" }
-webdown-engine = { path = "../webdown-engine" }
+webdown-core = { path = "../../crates/webdown-core" }
+webdown-engine = { path = "../../crates/webdown-engine" }
 clap = { workspace = true }
 tokio = { workspace = true }
 thiserror = { workspace = true }

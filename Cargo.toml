@@ -1,7 +1,7 @@
 [workspace]
 resolver = "2"
 members = [
-    "crates/webdown-cli",
+    "apps/webdown-cli",
     "crates/webdown-core",
     "crates/webdown-engine",
 ]
