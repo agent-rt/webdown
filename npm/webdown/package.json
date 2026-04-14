@@ -1,0 +1,21 @@
+{
+  "name": "@agent-rt/webdown",
+  "version": "0.1.0",
+  "description": "Convert web pages to Markdown — Rust CLI powered by Turndown.js via WebAssembly",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agent-rt/webdown"
+  },
+  "bin": {
+    "webdown": "bin/webdown"
+  },
+  "optionalDependencies": {
+    "@agent-rt/webdown-darwin-arm64": "0.1.0",
+    "@agent-rt/webdown-darwin-x64": "0.1.0",
+    "@agent-rt/webdown-linux-x64-gnu": "0.1.0",
+    "@agent-rt/webdown-linux-arm64-gnu": "0.1.0"
+  },
+  "keywords": ["markdown", "html", "turndown", "wasm", "cli"],
+  "files": ["bin/", "README.md", "LICENSE"]
+}
