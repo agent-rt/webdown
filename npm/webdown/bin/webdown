@@ -1,0 +1,49 @@
+#!/usr/bin/env node
+
+const { execFileSync } = require("child_process");
+const os = require("os");
+const path = require("path");
+
+const PLATFORMS = {
+  "darwin-arm64": "@agent-rt/webdown-darwin-arm64",
+  "darwin-x64": "@agent-rt/webdown-darwin-x64",
+  "linux-x64": "@agent-rt/webdown-linux-x64-gnu",
+  "linux-arm64": "@agent-rt/webdown-linux-arm64-gnu",
+};
+
+function getBinaryPath() {
+  const platform = os.platform();
+  const arch = os.arch();
+  const key = `${platform}-${arch}`;
+  const pkg = PLATFORMS[key];
+
+  if (!pkg) {
+    console.error(
+      `error: unsupported platform ${platform}-${arch}\n` +
+      `Supported: ${Object.keys(PLATFORMS).join(", ")}`
+    );
+    process.exit(1);
+  }
+
+  try {
+    const binName = platform === "win32" ? "webdown.exe" : "webdown";
+    return require.resolve(path.join(pkg, binName));
+  } catch {
+    console.error(
+      `error: platform package ${pkg} is not installed.\n` +
+      `Try reinstalling: npm install @agent-rt/webdown`
+    );
+    process.exit(1);
+  }
+}
+
+const bin = getBinaryPath();
+
+try {
+  execFileSync(bin, process.argv.slice(2), { stdio: "inherit" });
+} catch (e) {
+  if (e.status !== undefined) {
+    process.exit(e.status);
+  }
+  throw e;
+}

@@ -1,0 +1,13 @@
+{
+  "name": "@agent-rt/webdown-darwin-arm64",
+  "version": "0.1.0",
+  "description": "webdown binary for macOS ARM64 (Apple Silicon)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agent-rt/webdown"
+  },
+  "os": ["darwin"],
+  "cpu": ["arm64"],
+  "files": ["webdown"]
+}

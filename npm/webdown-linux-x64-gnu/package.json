@@ -1,0 +1,13 @@
+{
+  "name": "@agent-rt/webdown-linux-x64-gnu",
+  "version": "0.1.0",
+  "description": "webdown binary for Linux x64 (glibc)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agent-rt/webdown"
+  },
+  "os": ["linux"],
+  "cpu": ["x64"],
+  "files": ["webdown"]
+}

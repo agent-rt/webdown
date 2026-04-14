@@ -194,4 +194,8 @@ target/
 engine/turndown-wasm/dist/
 engine/turndown-wasm/package-lock.json
 
+# npm platform package binaries (injected by CI)
+npm/webdown-*/webdown
+npm/webdown-*/webdown.exe
+
 # End of https://www.toptal.com/developers/gitignore/api/macos,rust,node
