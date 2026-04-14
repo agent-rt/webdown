@@ -193,5 +193,6 @@ target/
 # Turndown Wasm build artifacts
 engine/turndown-wasm/dist/
 engine/turndown-wasm/bun.lock
+engine/turndown-wasm/package-lock.json
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,rust,node
