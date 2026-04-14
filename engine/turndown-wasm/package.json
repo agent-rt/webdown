@@ -1,0 +1,17 @@
+{
+  "name": "turndown-wasm",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Turndown.js bundled for Javy compilation to WebAssembly",
+  "scripts": {
+    "build:bundle": "bun build src/index.ts --outfile=dist/bundle.js --target=node --minify",
+    "build:wasm": "javy build dist/bundle.js -o dist/turndown.wasm",
+    "build": "bun run build:bundle && bun run build:wasm"
+  },
+  "dependencies": {
+    "turndown": "^7.2.4"
+  },
+  "devDependencies": {
+    "@types/turndown": "^5.0.6"
+  }
+}

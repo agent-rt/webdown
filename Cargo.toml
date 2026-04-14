@@ -1,0 +1,25 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/webdown-cli",
+    "crates/webdown-core",
+    "crates/webdown-engine",
+]
+
+[workspace.package]
+edition = "2021"
+version = "0.1.0"
+license = "MIT"
+
+[workspace.dependencies]
+tokio = { version = "1.51", features = ["macros", "rt-multi-thread"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_yaml = "0.9"
+serde_json = "1.0"
+thiserror = "2.0"
+url = { version = "2.5", features = ["serde"] }
+reqwest = { version = "0.13", features = ["rustls", "json"], default-features = false }
+clap = { version = "4.6", features = ["derive"] }
+scraper = "0.26"
+wasmtime = "43"
+wasmtime-wasi = { version = "43", features = ["p1"] }

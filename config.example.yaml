@@ -1,0 +1,34 @@
+# webdown configuration example
+# Place at: ~/.config/webdown/config.yaml
+
+defaults:
+  turndown:
+    heading_style: atx
+    code_block_style: fenced
+    bullet_list_marker: "-"
+
+rules:
+  # Confluence — API mode with token auth
+  - domain: "*.atlassian.net"
+    auth:
+      type: token
+      value_env: CONFLUENCE_TOKEN
+      header: Authorization
+      prefix: Bearer
+    source:
+      type: api
+      url_template: "{scheme}://{host}/wiki/rest/api/content/{path_segment}?expand=body.storage"
+      body_path: "body.storage.value"
+    turndown:
+      heading_style: atx
+
+  # GitHub — extract article content only
+  - domain: "github.com"
+    source:
+      type: html
+      selector: "article.markdown-body"
+
+  # Default — fetch full HTML
+  - domain: "*"
+    source:
+      type: html

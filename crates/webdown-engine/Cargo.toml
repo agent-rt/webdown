@@ -1,0 +1,12 @@
+[package]
+name = "webdown-engine"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+
+[dependencies]
+wasmtime = { workspace = true }
+wasmtime-wasi = { workspace = true }
+thiserror = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }

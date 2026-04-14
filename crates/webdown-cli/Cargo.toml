@@ -1,0 +1,18 @@
+[package]
+name = "webdown-cli"
+edition.workspace = true
+version.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "webdown"
+path = "src/main.rs"
+
+[dependencies]
+webdown-core = { path = "../webdown-core" }
+webdown-engine = { path = "../webdown-engine" }
+clap = { workspace = true }
+tokio = { workspace = true }
+thiserror = { workspace = true }
+url = { workspace = true }
+reqwest = { workspace = true }
