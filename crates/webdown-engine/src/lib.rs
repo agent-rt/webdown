@@ -79,8 +79,7 @@ impl TurndownEngine {
     /// - **Concurrency**: `Engine` and `Module` are `Send + Sync`.
     pub fn new() -> Result<Self, EngineError> {
         let engine = Engine::default();
-        let module = Module::new(&engine, TURNDOWN_WASM)
-            .map_err(EngineError::WasmCompile)?;
+        let module = Module::new(&engine, TURNDOWN_WASM).map_err(EngineError::WasmCompile)?;
         Ok(Self { engine, module })
     }
 
@@ -94,8 +93,7 @@ impl TurndownEngine {
     ///   Each call gets its own isolated Wasm instance.
     pub fn convert(&self, html: &str, options: &TurndownOptions) -> Result<String, EngineError> {
         let input = WasmInput { html, options };
-        let input_json = serde_json::to_string(&input)
-            .map_err(EngineError::SerializeInput)?;
+        let input_json = serde_json::to_string(&input).map_err(EngineError::SerializeInput)?;
 
         // Set up piped stdin/stdout
         let stdin_pipe = MemoryInputPipe::new(input_json);
@@ -110,28 +108,26 @@ impl TurndownEngine {
 
         // Create linker with WASI p1 bindings
         let mut linker: Linker<WasiP1Ctx> = Linker::new(&self.engine);
-        p1::add_to_linker_sync(&mut linker, |ctx| ctx)
-            .map_err(EngineError::WasmLink)?;
+        p1::add_to_linker_sync(&mut linker, |ctx| ctx).map_err(EngineError::WasmLink)?;
 
         // Instantiate and run _start
         let mut store = Store::new(&self.engine, wasi_ctx);
-        let instance = linker.instantiate(&mut store, &self.module)
+        let instance = linker
+            .instantiate(&mut store, &self.module)
             .map_err(EngineError::WasmInstantiate)?;
 
         let start = instance
             .get_typed_func::<(), ()>(&mut store, "_start")
             .map_err(EngineError::WasmEntrypoint)?;
 
-        start.call(&mut store, ())
-            .map_err(EngineError::WasmExec)?;
+        start.call(&mut store, ()).map_err(EngineError::WasmExec)?;
 
         // Read stdout output
         let output_bytes = stdout_reader.contents();
-        let output_str = std::str::from_utf8(&output_bytes)
-            .map_err(EngineError::InvalidUtf8)?;
+        let output_str = std::str::from_utf8(&output_bytes).map_err(EngineError::InvalidUtf8)?;
 
-        let output: WasmOutput = serde_json::from_str(output_str)
-            .map_err(EngineError::DeserializeOutput)?;
+        let output: WasmOutput =
+            serde_json::from_str(output_str).map_err(EngineError::DeserializeOutput)?;
 
         Ok(output.markdown)
     }
@@ -147,14 +143,19 @@ mod tests {
 
     #[test]
     fn heading() {
-        let md = engine().convert("<h1>Hello</h1>", &TurndownOptions::default()).unwrap();
+        let md = engine()
+            .convert("<h1>Hello</h1>", &TurndownOptions::default())
+            .unwrap();
         assert_eq!(md.trim(), "# Hello");
     }
 
     #[test]
     fn bold_and_italic() {
         let md = engine()
-            .convert("<p><strong>bold</strong> and <em>italic</em></p>", &TurndownOptions::default())
+            .convert(
+                "<p><strong>bold</strong> and <em>italic</em></p>",
+                &TurndownOptions::default(),
+            )
             .unwrap();
         assert!(md.contains("**bold**"));
         assert!(md.contains("_italic_") || md.contains("*italic*"));
@@ -163,7 +164,10 @@ mod tests {
     #[test]
     fn link() {
         let md = engine()
-            .convert(r#"<a href="https://example.com">Click</a>"#, &TurndownOptions::default())
+            .convert(
+                r#"<a href="https://example.com">Click</a>"#,
+                &TurndownOptions::default(),
+            )
             .unwrap();
         assert!(md.contains("[Click](https://example.com)"));
     }
@@ -171,7 +175,10 @@ mod tests {
     #[test]
     fn code_block() {
         let md = engine()
-            .convert("<pre><code>let x = 1;</code></pre>", &TurndownOptions::default())
+            .convert(
+                "<pre><code>let x = 1;</code></pre>",
+                &TurndownOptions::default(),
+            )
             .unwrap();
         assert!(md.contains("```"));
         assert!(md.contains("let x = 1;"));
@@ -191,9 +198,7 @@ mod tests {
             bullet_list_marker: "*".into(),
             ..Default::default()
         };
-        let md = engine()
-            .convert("<ul><li>item</li></ul>", &opts)
-            .unwrap();
+        let md = engine().convert("<ul><li>item</li></ul>", &opts).unwrap();
         assert!(md.contains("*") && !md.contains("- "));
     }
 

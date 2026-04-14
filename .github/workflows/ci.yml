@@ -1,0 +1,96 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: "-Dwarnings"
+
+jobs:
+  build-wasm:
+    name: Build turndown.wasm
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+
+      - uses: jcbhmr/setup-javy@v1
+
+      - name: Install npm dependencies
+        working-directory: engine/turndown-wasm
+        run: bun install --frozen-lockfile
+
+      - name: Bundle & compile to Wasm
+        working-directory: engine/turndown-wasm
+        run: |
+          mkdir -p dist
+          bun build src/index.ts --outfile=dist/bundle.js --target=node --minify
+          javy build dist/bundle.js -o dist/turndown.wasm
+
+      - name: Upload turndown.wasm
+        uses: actions/upload-artifact@v4
+        with:
+          name: turndown-wasm
+          path: engine/turndown-wasm/dist/turndown.wasm
+          retention-days: 1
+
+  check:
+    name: Check & Clippy
+    needs: build-wasm
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+
+      - uses: Swatinem/rust-cache@v2
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: turndown-wasm
+          path: engine/turndown-wasm/dist
+
+      - name: Cargo check
+        run: cargo check --workspace
+
+      - name: Clippy
+        run: cargo clippy --workspace -- -D warnings
+
+  test:
+    name: Test
+    needs: build-wasm
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: turndown-wasm
+          path: engine/turndown-wasm/dist
+
+      - name: Run tests
+        run: cargo test --workspace
+
+  fmt:
+    name: Rustfmt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+
+      - name: Check formatting
+        run: cargo fmt --all -- --check

@@ -69,7 +69,8 @@ fn domain_matches(pattern: &str, host: &str) -> bool {
     if let Some(suffix) = pattern_lower.strip_prefix("*.") {
         // "*.example.com" matches "sub.example.com" and "a.b.example.com"
         // but NOT "example.com" itself
-        host_lower.ends_with(suffix) && host_lower.len() > suffix.len()
+        host_lower.ends_with(suffix)
+            && host_lower.len() > suffix.len()
             && host_lower.as_bytes()[host_lower.len() - suffix.len() - 1] == b'.'
     } else {
         // Exact match
@@ -133,10 +134,7 @@ mod tests {
 
     #[test]
     fn match_rule_fallback_to_wildcard() {
-        let config = make_config(vec![
-            simple_rule("other.com"),
-            simple_rule("*"),
-        ]);
+        let config = make_config(vec![simple_rule("other.com"), simple_rule("*")]);
         let url = Url::parse("https://example.com/page").unwrap();
         let resolved = match_rule(&config, &url).unwrap();
         assert_eq!(resolved.domain, "*");

@@ -121,10 +121,7 @@ rules:
         assert_eq!(config.defaults.turndown.heading_style, "setext");
         assert_eq!(config.rules.len(), 2);
         assert_eq!(config.rules[0].domain, "example.com");
-        assert_eq!(
-            config.rules[0].source.selector.as_deref(),
-            Some("main")
-        );
+        assert_eq!(config.rules[0].source.selector.as_deref(), Some("main"));
 
         std::fs::remove_dir_all(&dir).ok();
     }

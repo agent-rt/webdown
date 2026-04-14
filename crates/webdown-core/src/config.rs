@@ -44,17 +44,12 @@ pub struct Auth {
     pub prefix: Option<String>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum SourceType {
+    #[default]
     Html,
     Api,
-}
-
-impl Default for SourceType {
-    fn default() -> Self {
-        Self::Html
-    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

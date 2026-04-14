@@ -55,10 +55,7 @@ fn resolve_url(url: &Url, rule: &ResolvedRule) -> Url {
             .replace("{host}", host)
             .replace("{path}", path)
             // Extract last path segment for APIs like Confluence
-            .replace(
-                "{path_segment}",
-                path.rsplit('/').next().unwrap_or(path),
-            );
+            .replace("{path_segment}", path.rsplit('/').next().unwrap_or(path));
 
         resolved.parse().unwrap_or_else(|_| url.clone())
     } else {
@@ -86,10 +83,7 @@ fn apply_auth(
         }
         AuthType::Cookie => builder.header("Cookie", value),
         AuthType::Header => {
-            let header_name = auth
-                .header
-                .as_deref()
-                .unwrap_or("Authorization");
+            let header_name = auth.header.as_deref().unwrap_or("Authorization");
             builder.header(header_name, value)
         }
     };
@@ -101,11 +95,7 @@ fn apply_auth(
 ///
 /// Supports paths like `"body.storage.value"` to traverse nested objects.
 fn extract_from_json(body: &str, rule: &ResolvedRule) -> Result<String, CoreError> {
-    let path = rule
-        .source
-        .body_path
-        .as_deref()
-        .unwrap_or("");
+    let path = rule.source.body_path.as_deref().unwrap_or("");
 
     if path.is_empty() {
         return Ok(body.to_owned());
@@ -118,9 +108,11 @@ fn extract_from_json(body: &str, rule: &ResolvedRule) -> Result<String, CoreErro
 
     let mut current = &json;
     for segment in path.split('.') {
-        current = current.get(segment).ok_or_else(|| CoreError::JsonPathExtract {
-            path: path.to_owned(),
-        })?;
+        current = current
+            .get(segment)
+            .ok_or_else(|| CoreError::JsonPathExtract {
+                path: path.to_owned(),
+            })?;
     }
 
     match current {
@@ -245,15 +237,19 @@ mod tests {
     fn resolve_url_no_template() {
         let url = Url::parse("https://example.com/page").unwrap();
         let rule = default_rule();
-        assert_eq!(resolve_url(&url, &rule).as_str(), "https://example.com/page");
+        assert_eq!(
+            resolve_url(&url, &rule).as_str(),
+            "https://example.com/page"
+        );
     }
 
     #[test]
     fn resolve_url_with_template() {
         let url = Url::parse("https://myteam.atlassian.net/wiki/content/12345").unwrap();
         let mut rule = default_rule();
-        rule.source.url_template =
-            Some("{scheme}://{host}/wiki/rest/api/content/{path_segment}?expand=body.storage".into());
+        rule.source.url_template = Some(
+            "{scheme}://{host}/wiki/rest/api/content/{path_segment}?expand=body.storage".into(),
+        );
 
         let resolved = resolve_url(&url, &rule);
         assert_eq!(
