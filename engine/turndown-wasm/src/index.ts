@@ -1,5 +1,7 @@
 import "./polyfill";
 import TurndownService from "turndown";
+// @ts-ignore — no type definitions available
+import { gfm } from "turndown-plugin-gfm";
 
 declare const Javy: {
   IO: {
@@ -54,6 +56,8 @@ const turndown = new TurndownService({
   codeBlockStyle: (options.code_block_style as "fenced" | "indented") || "fenced",
   bulletListMarker: (options.bullet_list_marker as "-" | "+" | "*") || "-",
 });
+
+turndown.use(gfm);
 
 const markdown: string = turndown.turndown(html);
 
