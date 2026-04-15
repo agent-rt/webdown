@@ -1,6 +1,6 @@
 {
   "name": "@agent-rt/webdown-linux-arm64-gnu",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "webdown binary for Linux ARM64 (glibc)",
   "license": "MIT",
   "repository": {

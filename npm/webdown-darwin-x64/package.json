@@ -1,6 +1,6 @@
 {
   "name": "@agent-rt/webdown-darwin-x64",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "webdown binary for macOS x64 (Intel)",
   "license": "MIT",
   "repository": {
