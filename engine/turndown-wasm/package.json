@@ -9,7 +9,8 @@
     "build": "bun run build:bundle && bun run build:wasm"
   },
   "dependencies": {
-    "turndown": "^7.2.4"
+    "turndown": "^7.2.4",
+    "turndown-plugin-gfm": "^1.0.2"
   },
   "devDependencies": {
     "@types/turndown": "^5.0.6"
